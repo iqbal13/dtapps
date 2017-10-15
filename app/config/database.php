@@ -75,12 +75,12 @@ $query_builder = TRUE;
 
 $db['default'] = array(
 	'dsn'	=> '',
-	'hostname' => 'localhost',
-	'username' => 'postgres',
-	'password' => 'insting13',
-	'database' => 'dtapps',
+	'hostname' => 'ec2-54-221-241-23.compute-1.amazonaws.com',
+	'username' => 'jvaqupjwjicbdf',
+	'password' => '8b1afd71735846128195b5e312cd160ef7f90d00f8d30889190d9eb9861b0055',
+	'database' => 'd9imtl8vlqlv76',
 	'dbdriver' => 'postgre',
-	'port'	   => '9991',
+	'port'	   => '5432',
 	'dbprefix' => '',
 	'pconnect' => FALSE,
 	'db_debug' => (ENVIRONMENT !== 'production'),
