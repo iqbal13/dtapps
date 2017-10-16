@@ -95,6 +95,28 @@ public function masterstatus_post(){
   }
 
 
+ function donasidetail_post(){
+    $dt = json_decode($this->post()[0]);
+    $id_daftarzakat = $dt->id_daftarzakat;
+
+    $donasi = $this->db->get_where('daftar_zakat',array('id_daftarzakat' => $id_daftarzakat))->row_array();
+
+    if($donasi){
+
+  $this->response([
+          'status' => TRUE,
+          'feedData' => $donasi
+                  ],Restdata::HTTP_OK);
+}else{
+
+  $this->response([
+          'status' => FALSE,
+          'message'=>'Gagal Load Data'
+        ],Restdata::HTTP_OK);
+}
+  }
+
+
   function listkonfirmasi_post(){
     $donasi = $this->db->get('konfirmasi_pembayaran')->result_array();
     if($donasi){
@@ -159,6 +181,28 @@ public function masterstatus_post(){
 
   }
 
+  function cekdonasi_post(){
+
+  $dt = json_decode($this->post()[0]);
+  $id_user = $dt->id_user;
+  $id_daftarzakat = $dt->id_daftarzakat;
+
+  $a = $this->db->get_where('trans_zakat',array('id_muzakki' => $id_user,'id_zakat' => $id_daftarzakat))->result_array();
+
+  if(count($a) == 0){
+
+       return $this->response([
+          'status' => FALSE
+        ],Restdata::HTTP_OK);
+  }else{
+
+       return $this->response([
+          'status' => TRUE        
+        ],Restdata::HTTP_OK);
+  }
+
+  }
+
   function donasi_post(){
 
     $dt = json_decode($this->post()[0]);
@@ -169,6 +213,7 @@ public function masterstatus_post(){
     $kategori_kebutuhan = $dt->kategori_kebutuhan;
     $urgensi = $dt->urgensi;
     $deskripsi = $dt->deskripsi;
+    $tanggal = $dt->tanggal;
 
     $data = array(
       'nama_kebutuhan' => $nama_kebutuhan,
@@ -177,7 +222,8 @@ public function masterstatus_post(){
       'kategori_kebutuhan' => $kategori_kebutuhan,
       'urgensi' => $urgensi,
       'status' => 'Proses',
-      'deskripsi' => $deskripsi);
+      'deskripsi' => $deskripsi,
+      'tanggal' => $tanggal);
   
       
       if ($this->mymodel->insertdonasi($data)) {

@@ -67,3 +67,6 @@ $route['api/getjenis']['POST'] = 'api/apidonasicontroller/masterzakat';
 $route['api/geturgensi']['POST'] = 'api/apidonasicontroller/masterurgensi';
 $route['api/getstatus']['POST'] = 'api/apidonasicontroller/masterstatus';
 $route['api/berdonasi']['POST'] = 'api/apidonasicontroller/berdonasi';
+
+$route['api/cekdonasi']['POST'] = 'api/apidonasicontroller/cekdonasi';
+$route['api/detaildonasi']['POST'] = 'api/apidonasicontroller/donasidetail';
