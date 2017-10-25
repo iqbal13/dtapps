@@ -305,6 +305,34 @@ public function masterstatus_post(){
   }
 
 
+function donasiuser_post(){
+  $dt = json_decode($this->post()[0]);
+  $id_user = $dt->id_user;
+  $query = "SELECT * FROM trans_zakat LEFT JOIN daftar_zakat ON trans_zakat.id_zakat = daftar_zakat.id_daftarzakat WHERE id_muzakki = '$id_user'";
+  $a = $this->db->query($query);
+  $b = $a->result_array();
+  if ($b) {
+
+
+        $this->response([
+          'status' => TRUE,
+          'donasi'=> $b
+        ],Restdata::HTTP_OK);
+
+      }else {
+
+     
+        $this->response([
+          'status' => FALSE,
+          'message'=>'Tidak ada Data'
+        ],Restdata::HTTP_OK);
+
+      
+    }
+
+
+}
+
 
 
 }
