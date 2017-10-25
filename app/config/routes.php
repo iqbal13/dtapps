@@ -58,6 +58,10 @@ $route['api/login']['POST']                           = 'api/apiusercontroller/u
 $route['api/signup']['POST']                           = 'api/apiusercontroller/adduser';//untuk menambahkan admin
 
 $route['api/tambahdonasi']['POST'] 						= 'api/apidonasicontroller/donasi';
+
+$route['api/editdonasi']['POST'] 						= 'api/apidonasicontroller/editdonasi';
+
+
 $route['api/getdonasi']['POST'] 						= 'api/apidonasicontroller/listdonasi';
 $route['api/listkonfirmasi']['POST'] 						= 'api/apidonasicontroller/listkonfirmasi';
 

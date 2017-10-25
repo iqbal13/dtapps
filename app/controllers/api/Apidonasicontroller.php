@@ -215,6 +215,50 @@ public function masterstatus_post(){
     
   }
 
+  function editdonasi_post(){
+      $dt = json_decode($this->post()[0]);
+
+    $id_daftarzakat = $dt->id_daftarzakat;
+    $nama_kebutuhan = $dt->nama_kebutuhan;
+    $kebutuhan_dana = $dt->kebutuhan_dana;
+    $nama_penerima = $dt->nama_penerima;
+    $kategori_kebutuhan = $dt->kategori_kebutuhan;
+    $urgensi = $dt->urgensi;
+    $deskripsi = $dt->deskripsi;
+    $tanggal = $dt->tanggal;
+    $created_date = date('Y-m-d');
+    $data = array(
+      'nama_kebutuhan' => $nama_kebutuhan,
+      'kebutuhan_dana' => $kebutuhan_dana,
+      'nama_penerima' => $nama_penerima,
+      'kategori_kebutuhan' => $kategori_kebutuhan,
+      'urgensi' => $urgensi,
+      'status' => 'Proses',
+      'created_date' => $created_date,
+      'deskripsi' => $deskripsi,
+      'tanggal' => $tanggal);
+    
+        $query = $this->db->update('daftar_zakat',$data,array('id_daftarzakat' => $id_daftarzakat));
+      if ($query) {
+
+
+        $this->response([
+          'status' => TRUE,
+          'message'=>'Edit Zakat Berhasil'
+        ],Restdata::HTTP_OK);
+
+      }else {
+
+     
+        $this->response([
+          'status' => FALSE,
+          'message'=>'Edit zakat gagal ditambahkan'
+        ],Restdata::HTTP_OK);
+
+      
+    }
+  }
+
   function donasi_post(){
       // $at = json_decode($this->files()[0]);
       $dt = json_decode($this->post()[0]);
@@ -227,7 +271,7 @@ public function masterstatus_post(){
     $urgensi = $dt->urgensi;
     $deskripsi = $dt->deskripsi;
     $tanggal = $dt->tanggal;
-
+    $created_date = date('Y-m-d');
     $data = array(
       'nama_kebutuhan' => $nama_kebutuhan,
       'kebutuhan_dana' => $kebutuhan_dana,
@@ -235,6 +279,7 @@ public function masterstatus_post(){
       'kategori_kebutuhan' => $kategori_kebutuhan,
       'urgensi' => $urgensi,
       'status' => 'Proses',
+      'created_date' => $created_date,
       'deskripsi' => $deskripsi,
       'tanggal' => $tanggal);
   
