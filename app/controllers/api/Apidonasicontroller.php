@@ -95,17 +95,21 @@ public function masterstatus_post(){
   }
 
 
+
  function donasidetail_post(){
     $dt = json_decode($this->post()[0]);
     $id_daftarzakat = $dt->id_daftarzakat;
 
     $donasi = $this->db->get_where('daftar_zakat',array('id_daftarzakat' => $id_daftarzakat))->row_array();
 
+    $donasi = $this->db->query("SELECT * FROM daftar_zakat LEFT JOIN master_urgensi ON daftar_zakat.urgensi = master_urgensi.id_urgensi LEFT JOIN master_jeniszakat ON daftar_zakat.kategori_kebutuhan = master_jeniszakat.id_jeniszakat")->row_array();  
+    $pendonasi = $this->db->query("SELECT * FROM trans_zakat LEFT JOIN daftar_zakat ON trans_zakat.id_zakat = daftar_zakat.id_daftarzakat LEFT JOIN users ON trans_zakat.id_muzakki = users.id_user LEFT JOIN muzakki ON users.email = muzakki.email WHERE id_zakat = '$id_daftarzakat'")->result_array();
     if($donasi){
 
   $this->response([
           'status' => TRUE,
-          'feedData' => $donasi
+          'feedData' => $donasi,
+          'pendonasi' => $pendonasi
                   ],Restdata::HTTP_OK);
 }else{
 
@@ -203,9 +207,18 @@ public function masterstatus_post(){
 
   }
 
-  function donasi_post(){
+  function ubahstatus_post(){
+    $dt = $json_decode($this->post()[0]);
+    $id_daftarzakat = $dt->id_daftarzakat;
 
-    $dt = json_decode($this->post()[0]);
+
+    
+  }
+
+  function donasi_post(){
+      // $at = json_decode($this->files()[0]);
+      $dt = json_decode($this->post()[0]);
+
 
     $nama_kebutuhan = $dt->nama_kebutuhan;
     $kebutuhan_dana = $dt->kebutuhan_dana;
