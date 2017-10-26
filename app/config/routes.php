@@ -75,3 +75,5 @@ $route['api/berdonasi']['POST'] = 'api/apidonasicontroller/berdonasi';
 $route['api/cekdonasi']['POST'] = 'api/apidonasicontroller/cekdonasi';
 $route['api/detaildonasi']['POST'] = 'api/apidonasicontroller/donasidetail';
 $route['api/donasiuser']['POST'] = 'api/apidonasicontroller/donasiuser';
+
+$route['api/konfirmasipembayaran']['POST'] = 'api/apidonasicontroller/konfirmasipembayaran';

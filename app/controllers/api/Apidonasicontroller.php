@@ -120,6 +120,35 @@ public function masterstatus_post(){
 }
   }
 
+  function konfirmasipembayaran_post(){
+
+    $dt = $json_decode($this->input()[0]);
+
+    $id_user = $dt->id_user;
+    $dt = array(
+      'kode_unik' => $dt->kode_unik,
+      'jumlah_pembayaran' => $dt->jumlah_pembayaran,
+      'atas_nama' => $dt->atas_nama,
+      'tanggal_transfer' => $dt->tanggal_transfer,
+      'created_by' => $id_user,
+      'created_date' => date('Y-m-d H:i:s'),
+      'status' => 1);
+
+    $a = $this->db->insert('konfirmasi_pembayaran',$dt);
+    if($a){
+        $this->response([
+          'status' => TRUE,
+          'message' => 'Proses Berhasil'
+                  ],Restdata::HTTP_OK);
+    }else{
+      $this->response([
+          'status' => FALSE,
+          'message' => 'Proses Gagal'
+                  ],Restdata::HTTP_OK);
+    }
+
+  }
+
 
   function listkonfirmasi_post(){
     $donasi = $this->db->get('konfirmasi_pembayaran')->result_array();
@@ -184,6 +213,30 @@ public function masterstatus_post(){
 
 
   }
+
+  function ubahpassword_post(){
+    $dt = json_decode($this->post()[0]);
+
+    $id_user = $dt->id_user;
+    $password = $dt->password;
+    $data = array(
+      'password' => md5($password));
+
+    $a = $this->db->update('user',$data,array('id_user' => $id_user));
+    if($a){
+   $this->response([
+          'status' => TRUE,
+          'message'=>'Edit Password Berhasil'
+        ],Restdata::HTTP_OK);
+    }else{
+         $this->response([
+          'status' => FALSE,
+          'message'=>'Edit Password Gagal'
+        ],Restdata::HTTP_OK);
+    }
+
+  }
+
 
   function cekdonasi_post(){
 
