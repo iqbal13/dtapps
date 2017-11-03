@@ -76,6 +76,30 @@ public function masterstatus_post(){
 
   //method untuk melakukan penambahan admin (post)
 
+  function listdonasiuser_post(){
+    $donasi = $this->db->get_where('daftar_zakat',array('status !=' => '2'))->result_array();
+
+    if($donasi){
+
+  $this->response([
+          'status' => TRUE,
+          'feedData' => $donasi
+                  ],Restdata::HTTP_OK);
+
+     }else{
+
+
+  $this->response([
+          'status' => TRUE,
+          'feedData' => "Gagal Load Data"
+                  ],Restdata::HTTP_FALSE);
+
+
+     }
+
+
+  }
+
   function listdonasi_post(){
     $donasi = $this->mymodel->getdonasi();
 
@@ -94,15 +118,35 @@ public function masterstatus_post(){
 }
   }
 
+  function updatestatus_post(){
+    $dt = json_decode($this->post()[0]);
+    $id_daftarzakat = $dt->id_daftarzakat;
+    $status = $dt->status;
+
+    $dta = array(
+      'status' => $status);
+
+    $a =  $this->db->update('daftar_zakat',$dta,array('id_daftarzakat' => $id_daftarzakat));
+    if($a){
+        $this->response([
+          'status' => TRUE,
+          'message'=>'Status Zakat Berhasil Dirubah'
+        ],Restdata::HTTP_OK);
+    }
+  }
+
 
 
  function donasidetail_post(){
+  $id_daftarzakat = 0;
     $dt = json_decode($this->post()[0]);
+
     $id_daftarzakat = $dt->id_daftarzakat;
+   // echo $id_daftarzakat;
 
-    $donasi = $this->db->get_where('daftar_zakat',array('id_daftarzakat' => $id_daftarzakat))->row_array();
+//    $donasi = $this->db->get_where('daftar_zakat',array('id_daftarzakat' => $id_daftarzakat))->row_array();
 
-    $donasi = $this->db->query("SELECT * FROM daftar_zakat LEFT JOIN master_urgensi ON daftar_zakat.urgensi = master_urgensi.id_urgensi LEFT JOIN master_jeniszakat ON daftar_zakat.kategori_kebutuhan = master_jeniszakat.id_jeniszakat")->row_array();  
+    $donasi = $this->db->query("SELECT * FROM daftar_zakat LEFT JOIN master_urgensi ON daftar_zakat.urgensi = master_urgensi.id_urgensi LEFT JOIN master_jeniszakat ON daftar_zakat.kategori_kebutuhan = master_jeniszakat.id_jeniszakat LEFT JOIN master_status ON daftar_zakat.status = master_status.id_status WHERE id_daftarzakat = '$id_daftarzakat'")->row_array();  
     $pendonasi = $this->db->query("SELECT * FROM trans_zakat LEFT JOIN daftar_zakat ON trans_zakat.id_zakat = daftar_zakat.id_daftarzakat LEFT JOIN users ON trans_zakat.id_muzakki = users.id_user LEFT JOIN muzakki ON users.email = muzakki.email WHERE id_zakat = '$id_daftarzakat'")->result_array();
     if($donasi){
 
@@ -119,6 +163,37 @@ public function masterstatus_post(){
         ],Restdata::HTTP_OK);
 }
   }
+
+
+
+ function donasidetailselesai_post(){
+  $id_daftarzakat = 0;
+    $dt = json_decode($this->post()[0]);
+
+    $id_daftarzakat = $dt->id_daftarzakat;
+   // echo $id_daftarzakat;
+
+//    $donasi = $this->db->get_where('daftar_zakat',array('id_daftarzakat' => $id_daftarzakat))->row_array();
+
+    $donasi = $this->db->query("SELECT * FROM daftar_zakat LEFT JOIN master_urgensi ON daftar_zakat.urgensi = master_urgensi.id_urgensi LEFT JOIN master_jeniszakat ON daftar_zakat.kategori_kebutuhan = master_jeniszakat.id_jeniszakat WHERE id_daftarzakat = '$id_daftarzakat' AND status = 2 AND status_pendaftaran = 2")->row_array();  
+    $pendonasi = $this->db->query("SELECT * FROM trans_zakat LEFT JOIN daftar_zakat ON trans_zakat.id_zakat = daftar_zakat.id_daftarzakat LEFT JOIN users ON trans_zakat.id_muzakki = users.id_user LEFT JOIN muzakki ON users.email = muzakki.email WHERE id_zakat = '$id_daftarzakat'")->result_array();
+    if($donasi){
+
+  $this->response([
+          'status' => TRUE,
+          'feedData' => $donasi,
+          'pendonasi' => $pendonasi
+                  ],Restdata::HTTP_OK);
+}else{
+
+  $this->response([
+          'status' => FALSE,
+          'message'=>'Gagal Load Data'
+        ],Restdata::HTTP_OK);
+}
+  }
+
+
 
   function konfirmasipembayaran_post(){
 
@@ -246,15 +321,25 @@ public function masterstatus_post(){
 
   $a = $this->db->get_where('trans_zakat',array('id_muzakki' => $id_user,'id_zakat' => $id_daftarzakat))->result_array();
 
+  $cekdt = $this->db->get_where('konfirmasi_pembayaran',array('kode_unik' => @$a[0]['kode_unik'],'status' => 2));
+
+
+
   if(count($a) == 0){
 
        return $this->response([
           'status' => FALSE
         ],Restdata::HTTP_OK);
   }else{
+    if($cekdt->num_rows() == 0){
+      $dtl = 0;
+    }else{
+      $dtl = $cekdt->row_array();
+    }
 
        return $this->response([
-          'status' => TRUE        
+          'status' => TRUE,
+          'data_transfer' => $dtl,
         ],Restdata::HTTP_OK);
   }
 
@@ -285,8 +370,7 @@ public function masterstatus_post(){
       'kebutuhan_dana' => $kebutuhan_dana,
       'nama_penerima' => $nama_penerima,
       'kategori_kebutuhan' => $kategori_kebutuhan,
-      'urgensi' => $urgensi,
-      'status' => 'Proses',
+      'status' => 1,
       'created_date' => $created_date,
       'deskripsi' => $deskripsi,
       'tanggal' => $tanggal);
@@ -312,8 +396,31 @@ public function masterstatus_post(){
     }
   }
 
+  function uploaddata_post(){ 
+
+    $a = $this->db->query("SELECT * FROM daftar_zakat ORDER BY id_daftarzakat DESC LIMIT 1");
+
+          if($_FILES['file']['name'] != ''){
+      $target_path = "img/masalah/";
+// $target_path = $target_path . basename( $_FILES['file']['name']);
+  $temp = explode(".", $_FILES["file"]["name"]);//untuk mengambil nama file gambarnya saja tanpa format gambarnya
+    $nama_baru = round(microtime(true)) . '.' . end($temp);//fungsi untuk membuat nama acak
+      if (move_uploaded_file($_FILES["file"]["tmp_name"], $target_path."/" . $nama_baru)) {
+        $id = $temp[0];
+
+        $t = base_url().$target_path.'/'.$nama_baru;
+
+        $query = "UPDATE daftar_zakat SET gambar = '$t' WHERE id_daftarzakat = '$id'";
+        $this->db->query($query);
+      } else {
+      }
+    }
+  }
+
   function donasi_post(){
       // $at = json_decode($this->files()[0]);
+
+
       $dt = json_decode($this->post()[0]);
 
 
@@ -330,19 +437,19 @@ public function masterstatus_post(){
       'kebutuhan_dana' => $kebutuhan_dana,
       'nama_penerima' => $nama_penerima,
       'kategori_kebutuhan' => $kategori_kebutuhan,
-      'urgensi' => $urgensi,
-      'status' => 'Proses',
+      'status' => 1,
       'created_date' => $created_date,
       'deskripsi' => $deskripsi,
       'tanggal' => $tanggal);
   
-      
+
       if ($this->mymodel->insertdonasi($data)) {
 
 
         $this->response([
           'status' => TRUE,
-          'message'=>'Daftar Zakat berhasil ditambahkan'
+          'message'=>'Daftar Zakat berhasil ditambahkan',
+          'id_daftarzakat' => $this->db->insert_id()
         ],Restdata::HTTP_OK);
 
       }else {
@@ -361,7 +468,36 @@ public function masterstatus_post(){
 function donasiuser_post(){
   $dt = json_decode($this->post()[0]);
   $id_user = $dt->id_user;
-  $query = "SELECT * FROM trans_zakat LEFT JOIN daftar_zakat ON trans_zakat.id_zakat = daftar_zakat.id_daftarzakat WHERE id_muzakki = '$id_user'";
+  $query = "SELECT * FROM trans_zakat LEFT JOIN daftar_zakat ON trans_zakat.id_zakat = daftar_zakat.id_daftarzakat LEFT JOIN master_status ON daftar_zakat.status = master_status.id_status WHERE id_muzakki = '$id_user'";
+  $a = $this->db->query($query);
+  $b = $a->result_array();
+  if ($b) {
+
+
+        $this->response([
+          'status' => TRUE,
+          'donasi'=> $b
+        ],Restdata::HTTP_OK);
+
+      }else {
+
+     
+        $this->response([
+          'status' => FALSE,
+          'message'=>'Tidak ada Data'
+        ],Restdata::HTTP_OK);
+
+      
+    }
+
+
+}
+
+
+function donasiuserselesai_post(){
+  $dt = json_decode($this->post()[0]);
+  $id_user = $dt->id_user;
+  $query = "SELECT * FROM trans_zakat LEFT JOIN daftar_zakat ON trans_zakat.id_zakat = daftar_zakat.id_daftarzakat LEFT JOIN master_status ON daftar_zakat.status = master_status.id_status WHERE id_muzakki = '$id_user' AND status = 2";
   $a = $this->db->query($query);
   $b = $a->result_array();
   if ($b) {

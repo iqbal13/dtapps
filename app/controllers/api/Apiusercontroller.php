@@ -8,14 +8,27 @@ class Apiusercontroller extends Restdata{
   public function __construct(){
     parent::__construct();
     $this->load->model('mymodel');
+    $this->load->library('form_validation');
+  }
+
+  private function cekusername($type,$username){
+    if($type == "username"){
+    $a = $this->db->get_where('users',array('username' => $username));
+    }else{
+      $a = $this->db->get_where('users',array('email' => $username));
+    }
+    if($a->num_rows() == 0){
+      return TRUE;
+    }else{
+      return FALSE;
+    }
+
   }
 
   //method untuk melakukan penambahan admin (post)
 
   function user_post(){
-
-  //  print_r($this->post());
-
+  //header("Access-Control-Allow-Origin: *");
     $dt = json_decode($this->post()[0]);
     $username = $dt->username;
     $password = $dt->password;
@@ -23,11 +36,9 @@ class Apiusercontroller extends Restdata{
     $this->response([
           'status' => FALSE,
           'message'=>'Harap isikan Username dan Password'
-        ],Restdata::HTTP_OK);    }else{
-
-
+        ],Restdata::HTTP_OK);    
+    }else{
     $password = md5($password);
-
     $users = $this->mymodel->ceklogin($username,$password);
     if($users){
 
@@ -48,21 +59,21 @@ class Apiusercontroller extends Restdata{
 
         $this->response([
           'status' => FALSE,
-          'message'=>'Username atau Password anda salah.. Silahkan coba lagi'
+          'message'=> json_encode($dt),
         ],Restdata::HTTP_OK);
 
       }
 
-    }
 
+    }
 
 
   }
 
   function adduser_post(){
 
-    $dt = json_decode($this->post()[0]);
 
+    $dt = json_decode($this->post()[0]);
     $nama_lengkap = $dt->nama_lengkap;
     $tanggal_lahir = $dt->tanggal_lahir;
     $pekerjaan = $dt->pekerjaan;
@@ -71,6 +82,27 @@ class Apiusercontroller extends Restdata{
     $alamat = $dt->alamat;
     $username = $dt->username;
     $password = $dt->password;
+
+    $cekusername = $this->cekusername("username",$username);
+    $cekemail = $this->cekusername("email",$email);
+
+
+    if(!$cekusername){
+        $this->response([
+          'status' => FALSE,
+          'message' => 'Username Telah Digunakan'
+        ],Restdata::HTTP_OK);
+        exit;
+    }
+
+
+    if(!$cekemail){
+       $this->response([
+          'status' => FALSE,
+          'message' => 'Password Telah Digunakan'
+        ],Restdata::HTTP_OK);
+      exit;
+    }
 
     $data = array(
       'nama_lengkap' => $nama_lengkap,
@@ -116,6 +148,58 @@ class Apiusercontroller extends Restdata{
   }
 
 
+  function getuserkel_post(){
+    $a = $this->db->get_where('users',array('id_level' => 2))->result_array();
+    if($a){
+    $this->response([
+          'status' => TRUE,
+          'data' => $a
+        ],Restdata::HTTP_OK);
+
+    }
+  }
+
+
+  function tambahuser_post(){
+
+    $dt = json_decode($this->post()[0]);
+    $username = $dt->username;
+    $password = $dt->password;
+    $password = md5($password);
+    $email = $dt->email;
+    $id_level = 2;
+    $status_user = 1;
+
+      $data = array(
+        'username' => $username,
+        'password' => $password,
+        'email' => $email,
+        'id_level' => $id_level,
+        'status_user' => $status_user);
+
+
+      $a = $this->db->insert('users',$data);
+      if($a){
+        
+         $this->response([
+          'status' => TRUE,
+          'message'=>'Pendaftaran Berhasil'
+        ],Restdata::HTTP_OK);
+
+
+      }else{
+
+         $this->response([
+          'status' => FALSE,
+          'message'=>'Pendaftaran Gagal'
+        ],Restdata::HTTP_OK);
+
+
+      }
+
+
+
+  }
 
 
 }
