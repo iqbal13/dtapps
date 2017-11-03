@@ -21,43 +21,18 @@ $route['api/anggota/(:num)']['PUT']                   = 'api/apianggotacontrolle
 $route['api/anggota/(:num)']['DELETE']                = 'api/apianggotacontroller/anggota/id/$1';
 
 
-//---------------------------------api buku---------------------------------------------------------
-$route['api/buku']['GET']                             = 'api/apibukucontroller/buku';
-$route['api/buku/format/(:any)']['GET']               = 'api/apibukucontroller/buku/format/$1';
-$route['api/buku/(:num)']['GET']                      = 'api/apibukucontroller/buku/id/$1';
-$route['api/buku/(:num)/format/(:any)']['GET']        = 'api/apibukucontroller/buku/id/$1/format/$2';
-
-
-$route['api/buku']['POST']                            = 'api/apibukucontroller/buku';
-$route['api/buku/(:num)']['PUT']                      = 'api/apibukucontroller/buku/id/$1';
-$route['api/buku/(:num)']['DELETE']                   = 'api/apibukucontroller/buku/id/$1';
-
-
-//---------------------------------api pinjam---------------------------------------------------------
-
-$route['api/pinjam']['GET']                            = 'api/apipinjamcontroller/pinjam';
-$route['api/pinjam/format/(:any)']['GET']              = 'api/apipinjamcontroller/pinjam/format/$1';
-$route['api/pinjam/(:num)']['GET']                     = 'api/apipinjamcontroller/pinjam/id/$1';
-$route['api/pinjam/(:num)/format/(:any)']['GET']       = 'api/apipinjamcontroller/pinjam/id/$1/format/$2';
-
-$route['api/pinjam']['POST']                           = 'api/apipinjamcontroller/pinjam';
-
-$route['api/pinjam/(:num)']['PUT']                     = 'api/apipinjamcontroller/pinjam/id/$1';
-
-$route['api/pinjam/(:num)']['DELETE']                  =  'api/apipinjamcontroller/pinjam/id/$1';
-
-
-
-//---------------------------------View Token---------------------------------------------------------
-$route['api/viewtoken']['POST']                       = 'api/restdata/viewtoken';
 
 
 //---------------------------------api admin---------------------------------------------------------
 $route['api/admin']['POST']                           = 'api/apiadmincontroller/admin';//untuk menambahkan admin
 $route['api/login']['POST']                           = 'api/apiusercontroller/user';//untuk menambahkan admin
 $route['api/signup']['POST']                           = 'api/apiusercontroller/adduser';//untuk menambahkan admin
+$route['api/tambahuser']['POST']                           = 'api/apiusercontroller/tambahuser';//untuk menambahkan admin
 
 $route['api/tambahdonasi']['POST'] 						= 'api/apidonasicontroller/donasi';
+$route['api/getuserkel']['POST'] 						= 'api/apiusercontroller/getuserkel';
+
+
 
 $route['api/editdonasi']['POST'] 						= 'api/apidonasicontroller/editdonasi';
 
@@ -74,6 +49,13 @@ $route['api/berdonasi']['POST'] = 'api/apidonasicontroller/berdonasi';
 
 $route['api/cekdonasi']['POST'] = 'api/apidonasicontroller/cekdonasi';
 $route['api/detaildonasi']['POST'] = 'api/apidonasicontroller/donasidetail';
+$route['api/detaildonasiselesai']['POST'] = 'api/apidonasicontroller/donasidetailselesai';
 $route['api/donasiuser']['POST'] = 'api/apidonasicontroller/donasiuser';
+$route['api/donasiuserselesai']['POST'] = 'api/apidonasicontroller/donasiuserselesai';
 
 $route['api/konfirmasipembayaran']['POST'] = 'api/apidonasicontroller/konfirmasipembayaran';
+
+$route['api/updatestatus']['POST'] = 'api/apidonasicontroller/updatestatus';
+$route['api/getdonasiuser']['POST'] = 'api/apidonasicontroller/listdonasiuser';
+
+$route['api/upload']['POST'] = 'api/apidonasicontroller/uploaddata';
