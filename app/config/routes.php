@@ -59,3 +59,10 @@ $route['api/updatestatus']['POST'] = 'api/apidonasicontroller/updatestatus';
 $route['api/getdonasiuser']['POST'] = 'api/apidonasicontroller/listdonasiuser';
 
 $route['api/upload']['POST'] = 'api/apidonasicontroller/uploaddata';
+
+
+$route['api/uploadkonfirmasi']['POST'] = 'api/apidonasicontroller/uploadkonfirmasi';
+
+$route['api/listkonfirmasidetail']['POST'] = 'api/apidonasicontroller/konfirmdetail';
+
+$route['api/ubahstatuskonfirmasi']['POST'] = 'api/apidonasicontroller/ubahstatuskonfirmasi';

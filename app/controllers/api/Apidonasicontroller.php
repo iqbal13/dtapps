@@ -197,23 +197,37 @@ public function masterstatus_post(){
 
   function konfirmasipembayaran_post(){
 
-    $dt = $json_decode($this->input()[0]);
+
+
+    $dt = json_decode($this->post()[0]);
+    $id_user = $dt->id_user;
+    $id_daftarzakat = $dt->id_daftarzakat;
+$a = $this->db->query("SELECT * FROM trans_zakat WHERE id_muzakki = '$id_user' AND id_zakat = '$id_daftarzakat'")->row_array();
+
+    $kode_unik = $a['kode_unik'];
+    // echo $kode_unik;
+
+    // print_r($dt);
+    // exit;
 
     $id_user = $dt->id_user;
     $dt = array(
-      'kode_unik' => $dt->kode_unik,
+      'kode_unik' => $kode_unik,
       'jumlah_pembayaran' => $dt->jumlah_pembayaran,
       'atas_nama' => $dt->atas_nama,
       'tanggal_transfer' => $dt->tanggal_transfer,
       'created_by' => $id_user,
+      'id_user' => $id_user,
       'created_date' => date('Y-m-d H:i:s'),
       'status' => 1);
 
     $a = $this->db->insert('konfirmasi_pembayaran',$dt);
     if($a){
+
         $this->response([
           'status' => TRUE,
-          'message' => 'Proses Berhasil'
+          'message' => 'Anda Telah berhasil melakukan konfirmasi pembayaran donasi, Terimakasih',
+          'id_daftarzakat' => $this->db->insert_id()
                   ],Restdata::HTTP_OK);
     }else{
       $this->response([
@@ -241,6 +255,30 @@ public function masterstatus_post(){
         ],Restdata::HTTP_OK);
 }
   }
+
+
+  function konfirmdetail_post(){
+    $dt = json_decode($this->post()[0]);
+    $id = $dt->id_konfirm;
+    $a = $this->db->query("SELECT * FROM konfirmasi_pembayaran LEFT JOIN trans_zakat ON konfirmasi_pembayaran.kode_unik = trans_zakat.kode_unik LEFT JOIN users ON konfirmasi_pembayaran.id_user = users.id_user LEFT JOIN daftar_zakat ON trans_zakat.id_zakat = daftar_zakat.id_daftarzakat WHERE id_konfirm = '$id'")->row_array();
+
+    //print_r($a);
+
+
+    if($a){
+      $this->response([
+        'status' => TRUE,
+        'data' => $a],Restdata::HTTP_OK);
+
+    }else{
+
+      $this->response([
+        'status' => FALSE
+      ],Restdata::HTTP_OK);
+    }
+
+  }
+
 
   function user_post(){
 
@@ -518,6 +556,77 @@ function donasiuserselesai_post(){
 
       
     }
+
+
+}
+
+function uploadkonfirmasi_post(){
+
+  print_r($_FILES);
+
+
+
+           if($_FILES['file']['name'] != ''){
+      $target_path = "img/konfirmasi/";
+// $target_path = $target_path . basename( $_FILES['file']['name']);
+  $temp = explode(".", $_FILES["file"]["name"]);//untuk mengambil nama file gambarnya saja tanpa format gambarnya
+    $nama_baru = round(microtime(true)) . '.' . end($temp);//fungsi untuk membuat nama acak
+      if (move_uploaded_file($_FILES["file"]["tmp_name"], $target_path."/" . $nama_baru)) {
+        $id = $temp[0];
+
+        $t = base_url().$target_path.'/'.$nama_baru;
+
+        $query = "UPDATE konfirmasi_pembayaran SET bukti_pembayaran = '$t' WHERE id_konfirm = '$id'";
+        $this->db->query($query);
+      } else {
+      }
+    }
+}
+
+
+function ubahstatuskonfirmasi_post(){
+  $dt = json_decode($this->post()[0]);
+
+  $id_konfirm = $dt->id_konfirm;
+  $status = $dt->status;
+
+  $query = $this->db->query("SELECT * FROM konfirmasi_pembayaran WHERE id_konfirm = '$id_konfirm'")->row_array();
+
+  $kode_unik = $query['kode_unik'];
+
+  $a = $this->db->query("UPDATE konfirmasi_pembayaran SET status = '$status' WHERE id_konfirm = '$id_konfirm'");
+  if($a){
+
+    if($status == 2){
+      $query2 = $this->db->query("UPDATE trans_zakat SET status_pendaftaran = '$status' WHERE kode_unik = '$kode_unik'");
+
+      $id_daftarzakat = $query2['id_zakat'];
+      $uang_transfer = $query['jumlah_pembayaran'];
+
+      $data = $this->db->query("SELECT * FROM daftar_zakat WHERE id_daftarzakat = '$id_daftarzakat'")->row_array();
+     
+      $angka = $data['progres_dana'];
+      $total = $angka + $uang_transfer;
+
+      $query3 = $this->db->query("UPDATE daftar_zakat SET progres_dana = '$total' WHERE id_daftarzakat = '$id_daftarzakat'");
+
+    }else{
+
+    }
+
+
+        $this->response([
+          'status' => TRUE,
+          'message' => 'Status Konfirmasi Pembayaran Berhasil Dirubah'
+        ],Restdata::HTTP_OK);
+
+  }else{
+
+        $this->response([
+          'status' => FALSE,
+          'message' => 'Status Konfirmasi Pembayaran GAGAL Dirubah'
+        ],Restdata::HTTP_OK);
+  }
 
 
 }

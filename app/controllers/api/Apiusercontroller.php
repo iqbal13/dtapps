@@ -59,7 +59,7 @@ class Apiusercontroller extends Restdata{
 
         $this->response([
           'status' => FALSE,
-          'message'=> json_encode($dt),
+          'message'=> 'Gagal Login',
         ],Restdata::HTTP_OK);
 
       }
