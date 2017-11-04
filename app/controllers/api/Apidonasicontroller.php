@@ -434,6 +434,24 @@ $a = $this->db->query("SELECT * FROM trans_zakat WHERE id_muzakki = '$id_user' A
     }
   }
 
+  public function resize_image($file_path, $width, $height) {
+
+    $this->load->library('image_lib');
+
+    $img_cfg['image_library'] = 'gd2';
+    $img_cfg['source_image'] = $file_path;
+    $img_cfg['maintain_ratio'] = TRUE;
+    $img_cfg['create_thumb'] = TRUE;
+    $img_cfg['new_image'] = $file_path;
+    $img_cfg['width'] = $width;
+    $img_cfg['quality'] = 100;
+    $img_cfg['height'] = $height;
+
+    $this->image_lib->initialize($img_cfg);
+    $this->image_lib->resize();
+
+}
+
   function uploaddata_post(){ 
 
     $a = $this->db->query("SELECT * FROM daftar_zakat ORDER BY id_daftarzakat DESC LIMIT 1");
@@ -447,12 +465,16 @@ $a = $this->db->query("SELECT * FROM trans_zakat WHERE id_muzakki = '$id_user' A
         $id = $temp[0];
 
         $t = base_url().$target_path.'/'.$nama_baru;
+        $this->resize_image($t,100,100);
 
         $query = "UPDATE daftar_zakat SET gambar = '$t' WHERE id_daftarzakat = '$id'";
+
+
+
         $this->db->query($query);
       } else {
-      }
     }
+      }
   }
 
   function donasi_post(){
