@@ -171,6 +171,56 @@ class Apiusercontroller extends Restdata{
     }
   }
 
+  function updateuser(){
+    $dt = json_decode($this->post()[0]);
+    $id_user = $dt->id_user;
+
+    $username = $dt->username;
+    $nama = $dt->nama;
+    $email = $dt->email;
+
+    $password = $dt->password;
+    if($password == ""){
+      $datanya = array(
+        'username' => $username,
+        'nama' => $nama,
+        'email' => $email);
+    }else{
+      $datanya = array(
+        'username' => $username,
+        'nama' => $nama,
+        'email' => $email,
+        'password' => md5($password));
+    }
+
+
+    $aa = $this->db->update('users',$datanya,array('id_user' => $id_user));
+    if($aa){
+        $this->response([
+          'status' => TRUE],Restdata::HTTP_OK);
+    }else{
+
+        $this->response([
+          'status' => FALSE],Restdata::HTTP_OK);
+    }
+
+  }
+
+  function getuserkelurahan_post(){
+    $dt = json_decode($this->post()[0]);
+    $id_user = $dt->id_user;
+    $a = $this->db->get_where('users',array('id_user' => $id_user))->row_array();
+    if($a){
+      $this->response([
+        'status' => TRUE,
+        'data' => $a],Restdata::HTTP_OK);
+    }else{
+
+      $this->response([
+        'status' => FALSE],Restdata::HTTP_OK);
+    }
+  }
+
 
   function getuserkel_post(){
     $a = $this->db->get_where('users',array('id_level' => 2))->result_array();

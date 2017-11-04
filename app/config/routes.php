@@ -75,3 +75,5 @@ $route['api/cekkonfirmasi']['POST'] = 'api/apidonasicontroller/cekkonfirmasi';
 
 
 $route['api/getinformasi']['POST'] = 'api/apidonasicontroller/getinformasi';
+$route['api/getuserkelurahan']['POST'] = 'api/apiusercontroller/getuserkelurahan';
+$route['api/updateuser']['POST'] = 'api/apiusercontroller/updateuser';
