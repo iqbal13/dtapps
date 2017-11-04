@@ -10,9 +10,8 @@
 
 		function index(){
 			$this->load->helper('url');
-$file = "android-debug.apk";
-	forced
-	force_download(base_url().'apk/android-debug.apk',NULL);
+$file = "dnt.apk";
+	force_download(base_url().'apk/android-debug.apk',$file);
 		}
 
 	}
