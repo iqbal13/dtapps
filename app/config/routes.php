@@ -31,7 +31,7 @@ $route['api/tambahuser']['POST']                           = 'api/apiusercontrol
 
 $route['api/tambahdonasi']['POST'] 						= 'api/apidonasicontroller/donasi';
 $route['api/getuserkel']['POST'] 						= 'api/apiusercontroller/getuserkel';
-
+$route['api/ubahpassword']['POST']						=	'api/apiusercontroller/ubahpassword';
 
 
 $route['api/editdonasi']['POST'] 						= 'api/apidonasicontroller/editdonasi';
