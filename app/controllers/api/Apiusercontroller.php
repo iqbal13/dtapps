@@ -70,6 +70,30 @@ class Apiusercontroller extends Restdata{
 
   }
 
+  function ubahpassword_post(){
+    $dt = json_decode($this->post()[0]);
+    $id_user = $dt->id_user;
+    $password = $dt->password;
+    $password = md5($password);
+
+    $data = array(
+      'password' => $password);
+    $a = $this->db->update('users',$data,array('id_user' => $id_user));
+    if($a){
+
+        $this->response([
+          'status' => TRUE,
+          'message'=> 'Password Berhasil Dirubah',
+        ],Restdata::HTTP_OK);
+    }else{
+    $this->response([
+          'status' => FALSE,
+          'message'=> 'Password Gagal Dirubah !!',
+        ],Restdata::HTTP_OK);
+
+    }
+  }
+
   function adduser_post(){
 
 
