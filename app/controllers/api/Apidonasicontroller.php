@@ -738,7 +738,7 @@ function ubahstatuskonfirmasi_post(){
 }
 
 
-  function getinformasi(){
+  function getinformasi_post(){
     $a = $this->db->get_where('informasi')->row_array();
     if($a){
       $this->response([
