@@ -77,7 +77,7 @@ public function masterstatus_post(){
   //method untuk melakukan penambahan admin (post)
 
   function listdonasiuser_post(){
-    $donasi = $this->db->get_where('daftar_zakat',array('status !=' => '2'))->result_array();
+    $donasi = $this->db->get_where('daftar_zakat',array('status !=' => '2','aktif' => 1))->result_array();
 
     if($donasi){
 
@@ -465,7 +465,7 @@ $a = $this->db->query("SELECT * FROM trans_zakat WHERE id_muzakki = '$id_user' A
         $id = $temp[0];
 
         $t = base_url().$target_path.'/'.$nama_baru;
-        $this->resize_image($t,100,100);
+        $this->resize_image($target_path."/".$nama_baru,100,100);
 
         $query = "UPDATE daftar_zakat SET gambar = '$t' WHERE id_daftarzakat = '$id'";
 
@@ -483,7 +483,6 @@ $a = $this->db->query("SELECT * FROM trans_zakat WHERE id_muzakki = '$id_user' A
 
       $dt = json_decode($this->post()[0]);
 
-
     $nama_kebutuhan = $dt->nama_kebutuhan;
     $kebutuhan_dana = $dt->kebutuhan_dana;
     $nama_penerima = $dt->nama_penerima;
@@ -492,6 +491,15 @@ $a = $this->db->query("SELECT * FROM trans_zakat WHERE id_muzakki = '$id_user' A
     $deskripsi = $dt->deskripsi;
     $tanggal = $dt->tanggal;
     $created_date = date('Y-m-d');
+    $created_by = $dt->created_by;
+
+    $cek = $this->db->get_where('users',array('id_user' => $created_by))->row_array();
+    if($cek['id_level'] == 3){
+      $aktif = 1;
+    }else{
+      $aktif = 0;
+    }
+
     $data = array(
       'nama_kebutuhan' => $nama_kebutuhan,
       'kebutuhan_dana' => $kebutuhan_dana,
@@ -499,8 +507,10 @@ $a = $this->db->query("SELECT * FROM trans_zakat WHERE id_muzakki = '$id_user' A
       'kategori_kebutuhan' => $kategori_kebutuhan,
       'status' => 1,
       'created_date' => $created_date,
+      'created_by' => $created_by,
       'deskripsi' => $deskripsi,
-      'tanggal' => $tanggal);
+      'tanggal' => $tanggal,
+      'aktif' => 1);
   
 
       if ($this->mymodel->insertdonasi($data)) {
