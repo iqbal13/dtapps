@@ -582,7 +582,7 @@ $a = $this->db->query("SELECT * FROM trans_zakat WHERE id_muzakki = '$id_user' A
       'created_by' => $created_by,
       'deskripsi' => $deskripsi,
       'tanggal' => $tanggal,
-      'aktif' => 1);
+      'aktif' => $aktif);
   
 
       if ($this->mymodel->insertdonasi($data)) {
