@@ -10,6 +10,31 @@ class Apidonasicontroller extends Restdata{
     $this->load->model('mymodel');
   }
 
+  function cekkonfirmasi_post(){
+    $dt = json_decode($this->post()[0]);
+    $id_user = $dt->id_user;
+    $id_zakat = $dt->id_daftarzakat;
+
+    $query1 = $this->db->get_where('trans_zakat',array('id_muzakki' => $id_user,'id_zakat' => $id_zakat))->row_array();
+    $kode_unik = $query1['kode_unik'];
+
+    $cek = $this->db->get_where('konfirmasi_pembayaran',array('kode_unik' => $kode_unik,'id_user' => $id_user))->result_array();
+    if(count($cek) != 0){
+         $this->response([
+          'status' => TRUE,
+          'data' => $cek[0]
+                  ],Restdata::HTTP_OK);
+
+    }else{
+
+         $this->response([
+          'status' => FALSE
+                  ],Restdata::HTTP_OK);
+
+    }
+
+  }
+
   public function berdonasi_post(){
     $dt = json_decode($this->post()[0]);
     $id_daftarzakat = $dt->id_daftarzakat;
@@ -74,7 +99,54 @@ public function masterstatus_post(){
     }
   }
 
+  function ubahstatuszakat_post(){
+    $dt = json_decode($this->post()[0]);
+    $id_daftarzakat = $dt->id_daftarzakat;
+    $aktif = $dt->aktif;
+
+    $query = "UPDATE daftar_zakat SET aktif = '$aktif' WHERE id_daftarzakat = '$id_daftarzakat'";
+    $ab = $this->db->query($query);
+    if($ab){
+      $this->response([
+        'status' => TRUE,
+        'message' => 'Aksi Berhasil Dilakukan'],Restdata::HTTP_OK);
+    }else{
+    $this->response([
+        'status' => FALSE,
+        'message' => 'Aksi Gagal Dilakukan'],Restdata::HTTP_OK);
+      
+    }
+  }
+
   //method untuk melakukan penambahan admin (post)
+
+  function listdonasiall_post(){
+//    $donasi = $this->db->get_where('daftar_zakat',array('aktif' => 0))->result_array();
+    
+    $donasi = $this->db->query("SELECT * FROM daftar_zakat LEFT JOIN users ON daftar_zakat.created_by = users.id_user WHERE aktif = 0")->result_array();
+
+        if($donasi){
+
+  $this->response([
+          'status' => TRUE,
+          'feedData' => $donasi
+                  ],Restdata::HTTP_OK);
+
+     }else{
+
+
+  $this->response([
+          'status' => TRUE,
+          'feedData' => "Gagal Load Data"
+                  ],Restdata::HTTP_FALSE);
+
+
+     }
+
+
+
+  }
+
 
   function listdonasiuser_post(){
     $donasi = $this->db->get_where('daftar_zakat',array('status !=' => '2','aktif' => 1))->result_array();
@@ -490,7 +562,7 @@ $a = $this->db->query("SELECT * FROM trans_zakat WHERE id_muzakki = '$id_user' A
     $urgensi = $dt->urgensi;
     $deskripsi = $dt->deskripsi;
     $tanggal = $dt->tanggal;
-    $created_date = date('Y-m-d');
+    $created_date = date('Y-m-d H:i:s');
     $created_by = $dt->created_by;
 
     $cek = $this->db->get_where('users',array('id_user' => $created_by))->row_array();

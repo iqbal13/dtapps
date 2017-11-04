@@ -38,6 +38,7 @@ $route['api/editdonasi']['POST'] 						= 'api/apidonasicontroller/editdonasi';
 
 
 $route['api/getdonasi']['POST'] 						= 'api/apidonasicontroller/listdonasi';
+$route['api/getdonasiall']['POST'] 						= 'api/apidonasicontroller/listdonasiall';
 $route['api/listkonfirmasi']['POST'] 						= 'api/apidonasicontroller/listkonfirmasi';
 
 $route['api/deletedonasi']['POST']                           = 'api/apidonasicontroller/deldonasi';
@@ -66,3 +67,7 @@ $route['api/uploadkonfirmasi']['POST'] = 'api/apidonasicontroller/uploadkonfirma
 $route['api/listkonfirmasidetail']['POST'] = 'api/apidonasicontroller/konfirmdetail';
 
 $route['api/ubahstatuskonfirmasi']['POST'] = 'api/apidonasicontroller/ubahstatuskonfirmasi';
+
+$route['api/ubahstatuszakat']['POST'] = 'api/apidonasicontroller/ubahstatuszakat';
+
+$route['api/cekkonfirmasi']['POST'] = 'api/apidonasicontroller/cekkonfirmasi';
