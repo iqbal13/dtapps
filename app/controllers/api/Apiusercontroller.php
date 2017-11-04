@@ -209,7 +209,6 @@ class Apiusercontroller extends Restdata{
   function getuserkelurahan_post(){
     $dt = json_decode($this->post()[0]);
     $id_user = $dt->id_user;
-    echo $id_user;
     $a = $this->db->get_where('users',array('id_user' => $id_user))->row_array();
     if($a){
       $this->response([
@@ -218,6 +217,7 @@ class Apiusercontroller extends Restdata{
     }else{
 
       $this->response([
+        'id_user' => $id_user,
         'status' => FALSE],Restdata::HTTP_OK);
     }
   }
