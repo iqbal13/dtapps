@@ -304,6 +304,7 @@ class Apiusercontroller extends Restdata{
     $password = md5($password);
     $nama = $dt->nama;
     $email = $dt->email;
+    $rt = $dt->rt;
     $id_level = 2;
     $status_user = 1;
 
@@ -313,6 +314,7 @@ class Apiusercontroller extends Restdata{
         'email' => $email,
         'id_level' => $id_level,
         'nama' => $nama,
+        'rt' => $rt,
         'status_user' => $status_user);
 
 
