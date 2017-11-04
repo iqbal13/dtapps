@@ -18,7 +18,10 @@ class Apidonasicontroller extends Restdata{
     $query1 = $this->db->get_where('trans_zakat',array('id_muzakki' => $id_user,'id_zakat' => $id_zakat))->row_array();
     $kode_unik = $query1['kode_unik'];
 
-    $cek = $this->db->get_where('konfirmasi_pembayaran',array('kode_unik' => $kode_unik,'id_user' => $id_user))->result_array();
+    // $cek = $this->db->get_where('konfirmasi_pembayaran',array('kode_unik' => $kode_unik,'id_user' => $id_user))->result_array();
+
+    $cek = $this->db->query("SELECT * FROM konfirmasi_pembayaran left join master_statuskonfirmasi On konfirmasi_pembayaran.status = master_statuskonfirmasi.id_statuskonfirmasi WHERE kode_unik = '$kode_unik' AND id_user = '$id_user'")->result_array();
+
     if(count($cek) != 0){
          $this->response([
           'status' => TRUE,
@@ -312,7 +315,9 @@ $a = $this->db->query("SELECT * FROM trans_zakat WHERE id_muzakki = '$id_user' A
 
 
   function listkonfirmasi_post(){
-    $donasi = $this->db->get('konfirmasi_pembayaran')->result_array();
+    // $donasi = $this->db->get('konfirmasi_pembayaran')->result_array();
+
+    $donasi = $this->db->query("SELECT * FROM konfirmasi_pembayaran LEFT JOIN master_statuskonfirmasi ON konfirmasi_pembayaran.status = master_statuskonfirmasi.id_statuskonfirmasi")->result_array();
     if($donasi){
 
   $this->response([
