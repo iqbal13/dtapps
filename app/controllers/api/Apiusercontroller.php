@@ -186,6 +186,50 @@ class Apiusercontroller extends Restdata{
     }
   }
 
+  function getuserdetail_post(){
+    $dt = json_decode($this->post()[0]);
+    $id_user = $dt->id_user;
+    $a = $this->db->query("SELECT * FROM users LEFT JOIN muzakki ON users.email = muzakki.email WHERE id_user = $id_user")->result_array();
+    if($a){
+    $this->response([
+          'status' => TRUE,
+          'data' => $a
+        ],Restdata::HTTP_OK);
+
+    }else{
+      $this->response([
+        'status' => FALSE],Restdata::HTTP_OK);
+    }
+
+  }
+
+  function aktifkanuser_post(){
+    $dt = json_decode($this->post()[0]);
+    // echo $dt;
+    // exit;
+    $id_user = $dt->id_user;
+    $status_user = $dt->status;
+
+    // echo $id_user;
+    // echo $status_user;
+    // exit;
+
+    $query = "UPDATE users SET status_user = '$status_user' WHERE id_user = $id_user";
+    $b = $this->db->query($query);
+    if($b){
+  $this->response([
+          'status' => TRUE,
+          'message' => 'Aksi Berhasil Dilakukan'
+        ],Restdata::HTTP_OK);
+
+    }else{
+      $this->response([
+          'status' => FALSE,
+        ],Restdata::HTTP_OK);
+
+    }
+  }
+
   function getusermasyarakat_post(){
  // $a = $this->db->get_where('users',array('id_level' => 1))->result_array();
     $a = $this->db->query("SELECT * FROM users LEFT JOIN muzakki ON users.email = muzakki.email WHERE id_level = 1")->result_array();

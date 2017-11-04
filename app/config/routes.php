@@ -29,13 +29,14 @@ $route['api/login']['POST']                           = 'api/apiusercontroller/u
 $route['api/signup']['POST']                           = 'api/apiusercontroller/adduser';//untuk menambahkan admin
 $route['api/tambahuser']['POST']                           = 'api/apiusercontroller/tambahuser';//untuk menambahkan admin
 
+$route['api/getuserdetail']['POST']						= 'api/apiusercontroller/getuserdetail';
 $route['api/tambahdonasi']['POST'] 						= 'api/apidonasicontroller/donasi';
 $route['api/getuserkel']['POST'] 						= 'api/apiusercontroller/getuserkel';
 $route['api/ubahpassword']['POST']						=	'api/apiusercontroller/ubahpassword';
 $route['api/getusermasyarakat']['POST']					= 'api/apiusercontroller/getusermasyarakat';
 
 $route['api/editdonasi']['POST'] 						= 'api/apidonasicontroller/editdonasi';
-
+$route['api/aktifkanuser']['POST']						= 'api/apiusercontroller/aktifkanuser';
 
 $route['api/getdonasi']['POST'] 						= 'api/apidonasicontroller/listdonasi';
 $route['api/getdonasiall']['POST'] 						= 'api/apidonasicontroller/listdonasiall';
@@ -71,3 +72,6 @@ $route['api/ubahstatuskonfirmasi']['POST'] = 'api/apidonasicontroller/ubahstatus
 $route['api/ubahstatuszakat']['POST'] = 'api/apidonasicontroller/ubahstatuszakat';
 
 $route['api/cekkonfirmasi']['POST'] = 'api/apidonasicontroller/cekkonfirmasi';
+
+
+$route['api/getinformasi']['POST'] = 'api/apidonasicontroller/getinformasi';

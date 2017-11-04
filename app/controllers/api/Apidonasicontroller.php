@@ -738,5 +738,14 @@ function ubahstatuskonfirmasi_post(){
 }
 
 
+  function getinformasi(){
+    $a = $this->db->get_where('informasi')->row_array();
+    if($a){
+      $this->response([
+        'status' => TRUE,
+        'data' => $a],Restdata::HTTP_OK);
+    }
+  }
+
 
 }
