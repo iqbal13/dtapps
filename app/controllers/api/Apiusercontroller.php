@@ -180,6 +180,24 @@ class Apiusercontroller extends Restdata{
           'data' => $a
         ],Restdata::HTTP_OK);
 
+    }else{
+      $this->response([
+        'status' => FALSE],Restdata::HTTP_OK);
+    }
+  }
+
+  function getusermasyarakat_post(){
+ // $a = $this->db->get_where('users',array('id_level' => 1))->result_array();
+    $a = $this->db->query("SELECT * FROM users LEFT JOIN muzakki ON users.email = muzakki.email WHERE id_level = 1")->result_array();
+    if($a){
+    $this->response([
+          'status' => TRUE,
+          'data' => $a
+        ],Restdata::HTTP_OK);
+
+    }else{
+      $this->response([
+        'status' => FALSE],Restdata::HTTP_OK);
     }
   }
 
@@ -190,6 +208,7 @@ class Apiusercontroller extends Restdata{
     $username = $dt->username;
     $password = $dt->password;
     $password = md5($password);
+    $nama = $dt->nama;
     $email = $dt->email;
     $id_level = 2;
     $status_user = 1;
@@ -199,6 +218,7 @@ class Apiusercontroller extends Restdata{
         'password' => $password,
         'email' => $email,
         'id_level' => $id_level,
+        'nama' => $nama,
         'status_user' => $status_user);
 
 
