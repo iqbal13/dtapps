@@ -534,16 +534,14 @@ $a = $this->db->query("SELECT * FROM trans_zakat WHERE id_muzakki = '$id_user' A
     $a = $this->db->query("SELECT * FROM daftar_zakat ORDER BY id_daftarzakat DESC LIMIT 1");
 
           if($_FILES['file']['name'] != ''){
-      $target_path = "img/masalah/";
+      $target_path = "img/masalah";
 // $target_path = $target_path . basename( $_FILES['file']['name']);
   $temp = explode(".", $_FILES["file"]["name"]);//untuk mengambil nama file gambarnya saja tanpa format gambarnya
     $nama_baru = round(microtime(true)) . '.' . end($temp);//fungsi untuk membuat nama acak
-      if (move_uploaded_file($_FILES["file"]["tmp_name"], $target_path."/" . $nama_baru)) {
+      if (move_uploaded_file($_FILES["file"]["tmp_name"],$target_path."/".$nama_baru)) {
         $id = $temp[0];
-
         $t = base_url().$target_path.'/'.$nama_baru;
         $this->resize_image($target_path."/".$nama_baru,100,100);
-
         $query = "UPDATE daftar_zakat SET gambar = '$t' WHERE id_daftarzakat = '$id'";
 
 
